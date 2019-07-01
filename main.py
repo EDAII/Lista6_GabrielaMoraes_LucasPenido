@@ -12,7 +12,7 @@ def main():
 
     with open('teste.json') as json_file:  
         data = json.load(json_file)
-    
+
     listaDeAdjacencia = {}
 
     # Criando lista de adjacência
@@ -32,7 +32,7 @@ def main():
     janelaPrincipal = Tk()
     janelaPrincipal.title("BUSCA-AZUL")
     janelaPrincipal.geometry("800x600+290+70") # width x height + x_offset + y_offset
-    Application(janelaPrincipal, listaDeAdjacencia)
+    Application(janelaPrincipal, listaDeAdjacencia, data)
 
     janelaPrincipal.mainloop()
     

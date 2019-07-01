@@ -4,10 +4,11 @@ from tkinter import ttk
 from funcoesGrafo import *
 
 class Application:
-    def __init__(self, master=None, listaDeAdjacencia=dict):
+    def __init__(self, master=None, listaDeAdjacencia=dict, data=dict):
         self.fonte = font.Font(family="Times", size=12)
         self.master = master
         self.listaDeAdjacencia = listaDeAdjacencia
+        self.data = data
         self.containerTitulo = Frame(master)
         self.containerTitulo["padx"] = 50
         self.containerTitulo["pady"] = 20
@@ -64,21 +65,25 @@ class Application:
         origem = self.txtAeroOrigem.get()
         destino = self.txtAeroDestino.get()
 
-        # print(self.listaDeAdjacencia)
-
-        largura, nivel, pai = BFS(self.listaDeAdjacencia, origem, destino)
-        menor_caminho = imprime_menor_caminho(pai, origem, destino)
-
         for label in self.containerRota.winfo_children():
             label.destroy()
+        if(origem == '' or destino == ''):
+            self.lblTitulo = Label(self.containerRota, text="Ambos os campos devem ser preenchidos! Por favor, digite novamente", font=self.fonte, width=70)
+            self.lblTitulo.pack()
+        # elif():
+            # self.lblTitulo = Label(self.containerRota, text="Um dos aeroportos não foi encontrado! Digite novamente", font=self.fonte, width=70)
+            # self.lblTitulo.pack()
+        else:
+            largura, nivel, pai = BFS(self.listaDeAdjacencia, origem, destino)
+            menor_caminho = imprime_menor_caminho(pai, origem, destino)
 
-        self.lblTitulo = Label(self.containerRota, text="A menor rota seria passando pelos seguintes aeroportos:", font=self.fonte, width=70)
-        self.lblTitulo.pack()
-        for i in range(0, len(menor_caminho)):
-            variable = menor_caminho[i]
-            sample = Label(self.containerRota, text=variable, font=self.fonte)
-            labels.append(sample)
-            sample.pack()
-            # def connect_callback(variable):
-            #     sample.bind('<Enter>', lambda event:print(variable))
-            # connect_callback(variable)
+            self.lblTitulo = Label(self.containerRota, text="A menor rota seria passando pelos seguintes aeroportos:", font=self.fonte, width=70)
+            self.lblTitulo.pack()
+            for i in range(0, len(menor_caminho)):
+                variable = menor_caminho[i]
+                sample = Label(self.containerRota, text=variable, font=self.fonte)
+                labels.append(sample)
+                sample.pack()
+                # def connect_callback(variable):
+                #     sample.bind('<Enter>', lambda event:print(variable))
+                # connect_callback(variable)
