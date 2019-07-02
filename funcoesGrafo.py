@@ -5,14 +5,15 @@ def BFS(grafo, aeroporto_origem, aeroporto_destino):
     ctdLargura = 1
     nivel = {}
     pai = {}
-    
+
     fila.append(aeroporto_origem)
     largura[aeroporto_origem] = ctdLargura
     nivel[aeroporto_origem] = 1
     pai[aeroporto_origem] = None
-    
+
     while len(fila):
-        vertice = fila.pop(0) 
+        vertice = fila.pop(0)
+        print(grafo.get(vertice))
         for vizinho in grafo.get(vertice):
             if not largura.get(vizinho):
                 fila.append(vizinho)
@@ -29,6 +30,6 @@ def imprime_menor_caminho(pai, aeroporto_origem, aeroporto_destino):
     while aeroporto_destino != aeroporto_origem:
         menor_caminho.insert(0, aeroporto_destino)
         aeroporto_destino = pai[aeroporto_destino]
-        
+
     menor_caminho.insert(0, aeroporto_origem)
-    return menor_caminho 
+    return menor_caminho

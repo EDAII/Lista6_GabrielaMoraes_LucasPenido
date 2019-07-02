@@ -2,9 +2,10 @@ from tkinter import *
 from tkinter import font
 from tkinter import ttk
 from funcoesGrafo import *
+from autocomplete import AutocompleteEntry
 
 class Application:
-    def __init__(self, master=None, listaDeAdjacencia=dict, data=dict):
+    def __init__(self, master=None, listaDeAdjacencia=dict, data=dict, lista=dict):
         self.fonte = font.Font(family="Times", size=12)
         self.master = master
         self.listaDeAdjacencia = listaDeAdjacencia
@@ -31,7 +32,7 @@ class Application:
         self.containerOrigem.pack()
         self.lblAeroOrigem = Label(self.containerOrigem, text="Aeroporto Origem:", font=self.fonte, width=20)
         self.lblAeroOrigem.pack(side=LEFT)
-        self.txtAeroOrigem = Entry(self.containerOrigem)
+        self.txtAeroOrigem = AutocompleteEntry(lista, self.containerOrigem)
         self.txtAeroOrigem["width"] = 80
         self.txtAeroOrigem["font"] = self.fonte
         self.txtAeroOrigem.pack()
@@ -42,11 +43,11 @@ class Application:
         self.containerDestino.pack()
         self.lblAeroDestino = Label(self.containerDestino, text="Aeroporto Destino:", font=self.fonte, width=20)
         self.lblAeroDestino.pack(side=LEFT)
-        self.txtAeroDestino = Entry(self.containerDestino)
+        self.txtAeroDestino = AutocompleteEntry(lista, self.containerDestino)
         self.txtAeroDestino["width"] = 80
         self.txtAeroDestino["font"] = self.fonte
         self.txtAeroDestino.pack()
-        
+
         self.ctBtnBuscar = Frame(master)
         self.ctBtnBuscar["padx"] = 20
         self.ctBtnBuscar["pady"] = 10
@@ -59,7 +60,7 @@ class Application:
         self.containerRota["padx"] = 50
         self.containerRota["pady"] = 20
         self.containerRota.pack()
-   
+
     def imprimeInterfaceMenorCaminho(self):
         labels = []
         origem = self.txtAeroOrigem.get()
@@ -70,20 +71,27 @@ class Application:
         if(origem == '' or destino == ''):
             self.lblTitulo = Label(self.containerRota, text="Ambos os campos devem ser preenchidos! Por favor, digite novamente", font=self.fonte, width=70)
             self.lblTitulo.pack()
-        # elif():
-            # self.lblTitulo = Label(self.containerRota, text="Um dos aeroportos não foi encontrado! Digite novamente", font=self.fonte, width=70)
-            # self.lblTitulo.pack()
-        else:
-            largura, nivel, pai = BFS(self.listaDeAdjacencia, origem, destino)
-            menor_caminho = imprime_menor_caminho(pai, origem, destino)
-
-            self.lblTitulo = Label(self.containerRota, text="A menor rota seria passando pelos seguintes aeroportos:", font=self.fonte, width=70)
+        elif(self.listaDeAdjacencia.get(origem) == None):
+            self.lblTitulo = Label(self.containerRota, text="Não foi possível encontrar o aeroporto de origem", font=self.fonte, width=70)
             self.lblTitulo.pack()
-            for i in range(0, len(menor_caminho)):
-                variable = menor_caminho[i]
-                sample = Label(self.containerRota, text=variable, font=self.fonte)
-                labels.append(sample)
-                sample.pack()
-                # def connect_callback(variable):
-                #     sample.bind('<Enter>', lambda event:print(variable))
-                # connect_callback(variable)
+        else:
+            temp = BFS(self.listaDeAdjacencia, origem, destino)
+            if temp == 0:
+                self.lblTitulo = Label(self.containerRota, text="Não é possível chegar ao aeroporto de destino a partir do de origem", font=self.fonte, width=70)
+                self.lblTitulo.pack()
+            else:
+                largura = temp[0]
+                nivel = temp[1]
+                pai = temp[2]
+                menor_caminho = imprime_menor_caminho(pai, origem, destino)
+
+                self.lblTitulo = Label(self.containerRota, text="A menor rota seria passando pelos seguintes aeroportos:", font=self.fonte, width=70)
+                self.lblTitulo.pack()
+                for i in range(0, len(menor_caminho)):
+                    variable = menor_caminho[i]
+                    sample = Label(self.containerRota, text=variable, font=self.fonte)
+                    labels.append(sample)
+                    sample.pack()
+                    # def connect_callback(variable):
+                    #     sample.bind('<Enter>', lambda event:print(variable))
+                    # connect_callback(variable)
